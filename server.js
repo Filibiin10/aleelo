@@ -8,6 +8,11 @@ const PORT = 7000;
 // Enable CORS for all origins
 app.use(cors());
 
+
+app.get('/', (req, res) => {
+  res.send('Welcome to the API!');
+})
+
 // Create a route to handle domain search
 app.get('/api/domain-search', async (req, res) => {
   const { domain } = req.query;
