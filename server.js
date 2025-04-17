@@ -1,38 +1,32 @@
+// server.js
 import express from 'express';
-import axios from 'axios';
 import cors from 'cors';
+import authRoutes from "./routes/authRoutes.js";
+import domainRoutes from "./routes/domainRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
+import hostingRoutes from "./routes/hostingRoutes.js";
+import db from "./db.js";
 
 const app = express();
 const PORT = 7000;
 
-// Enable CORS for all origins
+// === MIDDLEWARE === //
 app.use(cors());
+app.use(express.json());
 
+// === ROUTES === //
+app.use("/api/auth", authRoutes);
+app.use("/api/domains", domainRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/hosting", hostingRoutes);
 
-app.get('/', (req, res) => {
-  res.send('Welcome to the API!');
-})
-
-// Create a route to handle domain search
-app.get('/api/domain-search', async (req, res) => {
-  const { domain } = req.query;
-  if (!domain) {
-    return res.status(400).json({ error: 'Domain is required' });
-  }
-
-  try {
-    const response = await axios.get(`https://api.20i.com/domain-search/${domain}`, {
-      headers: {
-        'Authorization': `Bearer Y2U0NGRiOTJkNTc0N2JiZmI`, // Make sure to store token securely
-      },
-    });
-    res.json(response.data);
-  } catch (error) {
-    console.error('Error fetching domain info:', error.message);
-    res.status(500).json({ error: 'Failed to fetch domain information' });
-  }
+// === DATABASE TEST === //fghfth
+db.getConnection((err) => {
+  if (err) console.error("❌ MySQL Connection Failed:", err);
+  else console.log("✅ MySQL Connected Successfully");
 });
 
+// === START SERVER === //
 app.listen(PORT, () => {
-  console.log(`Server is running at http://localhost:${PORT}`);
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
