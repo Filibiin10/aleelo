@@ -9,7 +9,7 @@ import userRoutes from "./routes/userRoutes.js";
 import hostingRoutes from "./routes/hostingRoutes.js";
 import paymentRoutes from './routes/paymentRoutes.js';
 
-import initDB from './db.js';
+import db from './db.js';
 
 
 const app = express();
@@ -34,19 +34,19 @@ app.use('/api/payment', paymentRoutes);
 
 
 
-const pool = await initDB();
+// const pool = await initDB();
 
-if (pool) {
-  try {
-    const connection = await pool.getConnection();
-    console.log("✅ MySQL Connected Successfully");
-    connection.release();
-  } catch (err) {
-    console.error("❌ Error connecting to DB:", err.message);
-  }
-} else {
-  console.error("❌ Pool was not created.");
-}
+// if (db) {
+//   try {
+//     const connection = await db.getConnection();
+//     console.log("✅ MySQL Connected Successfully");
+//     connection.release();
+//   } catch (err) {
+//     console.error("❌ Error connecting to DB:", err.message);
+//   }
+// } else {
+//   console.error("❌ Pool was not created.");
+// }
 
 
 const client = new OAuth2Client("719009318816-d85q1a384d3rtq1g6hobllqpkspgfdli.apps.googleusercontent.com");
