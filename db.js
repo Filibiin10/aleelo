@@ -1,13 +1,10 @@
-// db.js
 import mysql from "mysql2/promise";
 import dotenv from "dotenv";
 dotenv.config();
 
-let pool;
-
 async function initDB() {
   try {
-    pool = await mysql.createPool({
+    const pool = await mysql.createPool({
       host: process.env.DB_HOST,
       port: process.env.DB_PORT,
       user: process.env.DB_USER,
@@ -16,9 +13,14 @@ async function initDB() {
       waitForConnections: true,
       connectionLimit: 5,
       queueLimit: 0,
+      ssl: {
+        rejectUnauthorized: false
+      }
     });
 
-    console.log("✅ MySQL Pool created");
+    const [rows] = await pool.query('SELECT 1');
+    console.log("✅ DB connection and query successful");
+
     return pool;
   } catch (err) {
     console.error("❌ Database connection failed:", err.message);
