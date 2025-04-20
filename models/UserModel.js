@@ -65,3 +65,15 @@ export const getUserById = async (id) => {
   const [users] = await db.execute("SELECT id, fullName, email, phone FROM users WHERE id = ?", [id]);
   return users.length > 0 ? users[0] : null;
 };
+
+export const getUserByUserRef = async (userRef) => {
+  try {
+    console.log("Searching for usereff =", userRef); // log the final value
+    const [rows] = await db.query("SELECT * FROM users WHERE usereff = ?", [String(userRef)]);
+    console.log("Query Result:", rows);
+    return rows.length > 0 ? rows[0] : null;
+  } catch (err) {
+    console.error("Error fetching user by usereff:", err.message);
+    throw err;
+  }
+};
