@@ -1,20 +1,15 @@
 // db.js
 import mysql from "mysql2/promise";
-import dotenv from "dotenv";
-dotenv.config();
 
 const pool = mysql.createPool({
-  host: process.env.DB_HOST,
-  port: process.env.DB_PORT,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASS,
-  database: process.env.DB_NAME,
+  host: "mysql.gb.stackcp.com",
+  port: 58164,
+  user: "aleelo-353039380cf0",
+  password: "aleelo123",
+  database: "aleelo-353039380cf0",
   waitForConnections: true,
   connectionLimit: 5,
   queueLimit: 0,
-   ssl: {
-        rejectUnauthorized: false
-      }
 });
 
 // Optional test connection
