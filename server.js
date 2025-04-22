@@ -85,6 +85,12 @@ app.post('/api/auth/google', async (req, res) => {
   }
 });
 
+app.get("/my-ip", async (req, res) => {
+  const response = await fetch("https://api.ipify.org");
+  const ip = await response.text();
+  res.send(`Public IP: ${ip}`);
+});
+
 // === START SERVER === //
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
