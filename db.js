@@ -11,13 +11,10 @@ const pool = mysql.createPool({
   waitForConnections: true,
   connectionLimit: 5,
   queueLimit: 0,
-  ssl: {
-    rejectUnauthorized: false
-  }
-});git add db.js
-git commit -m "Add SSL config for MySQL on Render"
-git push
-
+  // ssl: {
+  //   rejectUnauthorized: false
+  // }
+});
 
 // Optional test connection
 (async () => {
