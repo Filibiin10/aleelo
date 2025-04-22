@@ -7,7 +7,7 @@ import axios from "axios";
 
 dotenv.config();
 
-const JWT_SECRET = process.env.JWT_SECRET || "your_jwt_secret";
+const JWT_SECRET = "s3cr3t_k3y_f0r_JWT_t0kens";
 
 // 🔹 Sign Up Controller
 export const signUp = async (req, res) => {
@@ -214,7 +214,7 @@ export const login = async (req, res) => {
       return res.status(401).json({ message: "Invalid email or password" });
     }
 
-    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: "1h" });
+    const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: "1h" });
 
     const isProduction = process.env.NODE_ENV === "production";
 
@@ -247,6 +247,7 @@ export const login = async (req, res) => {
 
   } catch (error) {
     res.status(500).json({ error: error.message || "Server error" });
+    console.log(error)
   }
 };
 
