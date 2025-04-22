@@ -3,6 +3,7 @@ import mysql from "mysql2/promise";
 import dotenv from "dotenv";
 dotenv.config();
 
+<<<<<<< HEAD
 // const pool = mysql.createPool({
 //   host: process.env.DB_HOST,
 //   port: process.env.DB_PORT,
@@ -14,6 +15,8 @@ dotenv.config();
 //   queueLimit: 0,
 // });
 
+=======
+>>>>>>> a4f753324f08edeb93e0a14e876ccb707b286e4f
 const pool = mysql.createPool({
   host: "mysql.gb.stackcp.com",
   port: 58164,
@@ -25,6 +28,7 @@ const pool = mysql.createPool({
   queueLimit: 0,
 });
 
+<<<<<<< HEAD
 
 // Optional test connection
 (async () => {
@@ -37,4 +41,17 @@ const pool = mysql.createPool({
   }
 })();
 
+=======
+// Optional test connection
+(async () => {
+  try {
+    const connection = await pool.getConnection();
+    console.log("✅ MySQL Pool connected");
+    connection.release();
+  } catch (err) {
+    console.error("❌ MySQL connection error:", err.message);
+  }
+})();
+
+>>>>>>> a4f753324f08edeb93e0a14e876ccb707b286e4f
 export default pool;
