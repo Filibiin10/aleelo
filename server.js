@@ -18,7 +18,10 @@ const PORT = 7000;
 // === MIDDLEWARE === //
 // app.use(cors());
 app.use(cors({
-  origin: "https://shiineuu.com", // or your frontend origin
+  origin: [
+    "https://shiineuu.com",
+    "http://localhost:5173"
+  ],
   credentials: true,
 }));
 
