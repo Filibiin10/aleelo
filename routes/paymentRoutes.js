@@ -1,6 +1,7 @@
 // routes/paymentRoutes.js
 import express from 'express';
 import { checkPaymentStatusEDahab, checkPaymentStatusEVC } from '../services/paymentService.js';
+import { makeEvcPayment } from '../controllers/paymentController.js';
 
 const router = express.Router();
 
@@ -19,5 +20,7 @@ router.post('/pay/evc', async (req, res) => {
   const result = await checkPaymentStatusEVC(phone, amount, tokenID);
   res.json(result);
 });
+
+router.post('/evc', makeEvcPayment);
 
 export default router;

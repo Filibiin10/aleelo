@@ -62,7 +62,7 @@ export const getUserByEmail = async (email) => {
 // Get User by ID
 export const getUserById = async (id) => {
   const [users] = await db.execute(
-    "SELECT id, person_name AS fullName, email, phone FROM users WHERE id = ?",
+    "SELECT id, person_name AS fullName, email, voice FROM users WHERE id = ?",
     [id]
   );
   return users.length > 0 ? users[0] : null;

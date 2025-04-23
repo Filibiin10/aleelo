@@ -48,9 +48,17 @@ export const createStackUserHandler = async (req, res) => {
 
     const response = await axios.post(`${API_BASE}/susers`, payload, AUTH_HEADER);
 
-    res.status(200).json({
+    // Extract values from 20i response
+    const ref = response?.data?.result?.ref;
+    const password = response?.data?.result?.password;
+
+    console.log("✅ StackCP response:", response.data);
+
+    return res.status(200).json({
       message: "✅ StackCP User created successfully",
-      data: response.data
+      userRef: ref,
+      passwordStack: password,
+      data: response.data,
     });
 
   } catch (error) {
@@ -68,13 +76,14 @@ export const createStackUserHandler = async (req, res) => {
       });
     }
 
-    res.status(500).json({
+    console.error("❌ Failed to create StackCP user:", error?.response?.data || error.message);
+
+    return res.status(500).json({
       error: "❌ Failed to create StackCP user",
       details: error?.response?.data || error.message
     });
   }
 };
-
 
 export const checkStackUserExistsHandler = async (req, res) => {
   try {

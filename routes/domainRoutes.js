@@ -6,7 +6,9 @@ import {
   searchDomainHandler,
   getPackageTypesHandler,
   mockAddDomainHandler,
-  renewDomainHandler
+  renewDomainHandler,
+  saveDomain,
+  getDomainByName
 } from '../controllers/domainController.js';
 
 const router = express.Router();
@@ -18,5 +20,7 @@ router.get('/search/:domain', searchDomainHandler);
 router.get('/package-types', getPackageTypesHandler);
 router.post('/mock/add-domain/', mockAddDomainHandler);
 router.post('/renew', renewDomainHandler);
+router.post('/save', saveDomain);
+router.get('/:domain_name', getDomainByName);
 
 export default router;

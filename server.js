@@ -8,8 +8,7 @@ import domainRoutes from "./routes/domainRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import hostingRoutes from "./routes/hostingRoutes.js";
 import paymentRoutes from './routes/paymentRoutes.js';
-
-import db from './db.js';
+import emailRoutes from './routes/emailRoutes.js';
 
 
 const app = express();
@@ -34,22 +33,7 @@ app.use("/api/domains", domainRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/hosting", hostingRoutes);
 app.use('/api/payment', paymentRoutes);
-
-
-
-// const pool = await initDB();
-
-// if (db) {
-//   try {
-//     const connection = await db.getConnection();
-//     console.log("✅ MySQL Connected Successfully");
-//     connection.release();
-//   } catch (err) {
-//     console.error("❌ Error connecting to DB:", err.message);
-//   }
-// } else {
-//   console.error("❌ Pool was not created.");
-// }
+app.use('/api/email', emailRoutes);
 
 
 const client = new OAuth2Client("719009318816-d85q1a384d3rtq1g6hobllqpkspgfdli.apps.googleusercontent.com");
@@ -88,11 +72,7 @@ app.post('/api/auth/google', async (req, res) => {
   }
 });
 
-app.get("/my-ip", async (req, res) => {
-  const response = await fetch("https://api.ipify.org");
-  const ip = await response.text();
-  res.send(`Public IP: ${ip}`);
-});
+
 
 // === START SERVER === //
 app.listen(PORT, () => {
