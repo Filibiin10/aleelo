@@ -15,19 +15,30 @@ export const addHostingPackageHandler = async (req, res) => {
   try {
     const { type, domain_name, label, documentRoots, stackUser } = req.body;
 
+    // console.log("📦 Incoming Hosting Package Request:", req.body);
+
     if (!type || !domain_name || !label || !documentRoots || !stackUser) {
+      console.warn("⚠️ Missing required fields");
       return res.status(400).json({ error: "Missing required fields." });
     }
 
     const payload = { type, domain_name, label, documentRoots, stackUser };
+    // console.log("📤 Sending Payload to 20i:", payload);
 
     const response = await axios.post(`${RESELLER_API_URL}/addWeb`, payload, AUTH_HEADER);
+
+    console.log("✅ Hosting Package Response from 20i:", response.data.result);
     res.status(200).json({ message: "✅ Hosting package added", data: response.data });
 
   } catch (error) {
-    res.status(500).json({ error: "❌ Failed to add hosting package", details: error?.response?.data || error.message });
+    console.error("❌ Hosting Package Error:", error?.response?.data || error.message);
+    res.status(500).json({
+      error: "❌ Failed to add hosting package",
+      details: error?.response?.data || error.message,
+    });
   }
 };
+
 
 // export const addHostingPackageHandler = async (req, res) => {
 //   try {
