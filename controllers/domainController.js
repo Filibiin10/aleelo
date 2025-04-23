@@ -1,5 +1,6 @@
 // controllers/domainController.js
 import axios from 'axios';
+import db from '../db.js';
 
 const API_TOKEN = 'Bearer Y2FjOTY3N2IzYWY1MzEzNDk';
 const API_KEY = 'YzA1NzllZjNmYjE1YzBmYjU';
@@ -8,7 +9,7 @@ const RESELLER_API_URL = `https://api.20i.com/reseller/${RESELLER_ID}`;
 const DOMAIN_SEARCH_URL = 'https://api.20i.com/domain-search';
 const MOCK_DOMAIN_URL = 'https://private-anon-dbd1050e12-20i.apiary-mock.com/reseller/1';
 const MOCK_TRANSFER_URL = 'https://private-anon-f92285cc66-20i.apiary-mock.com/reseller/1/transferDomain';
-const TRANSFER_URL = 'https://api.20i.com/reseller/*/transferDomain'
+const TRANSFER_URL = 'https://api.20i.com/reseller/*/transferDomain';
 
 export const registerDomainHandler = async (req, res) => {
   try {
@@ -45,7 +46,7 @@ export const transferDomainHandler = async (req, res) => {
     res.status(200).json(response.data);
   } catch (error) {
     res.status(500).json({ message: 'Error transferring domain', error: error.message });
-    console.log(error)
+    console.log(error);
   }
 };
 
@@ -88,7 +89,7 @@ export const getPackageTypesHandler = async (req, res) => {
 };
 
 export const mockAddDomainHandler = async (req, res) => {
-  const { domainName, fullName, email, phone, address, city, country ,userRef} = req.body;
+  const { domainName, fullName, email, phone, address, city, country ,userRef } = req.body;
   const payload = {
     name: domainName,
     years: 1,
@@ -120,14 +121,13 @@ export const mockAddDomainHandler = async (req, res) => {
     console.log(response.data);
   } catch (error) {
     res.status(500).json({ error: 'Failed to add domain', details: error.message });
-    console.log(error)
+    console.log(error);
   }
 };
 
-
 export const renewDomainHandler = async (req, res) => {
   const { name, years, renewPrivacy } = req.body;
-  console.log(req.body)
+  console.log(req.body);
   try {
     const response = await axios.post(
       `${RESELLER_API_URL}/renewDomain`,
@@ -150,3 +150,45 @@ export const renewDomainHandler = async (req, res) => {
   }
 };
 
+// Save a new domain and its hosting package info
+export const saveDomain = async (req, res) => {
+  const { domain_name, package_id, user_ref, email } = req.body;
+
+  if (!domain_name || !package_id) {
+    return res.status(400).json({ success: false, message: "Domain name and package ID are required." });
+  }
+
+  try {
+    await db.execute(
+      `INSERT INTO domains (domain_name, package_id, user_ref, email) VALUES (?, ?, ?, ?)`,
+      [domain_name, package_id, user_ref || null, email || null]
+    );
+
+    res.status(200).json({ success: true, message: "Domain saved successfully." });
+  } catch (err) {
+    console.error("Error saving domain:", err);
+    res.status(500).json({ success: false, error: err.message });
+  }
+};
+
+// Retrieve domain details by domain name
+export const getDomainByName = async (req, res) => {
+  const { domain_name } = req.params;
+
+  if (!domain_name) {
+    return res.status(400).json({ success: false, message: "Domain name is required." });
+  }
+
+  try {
+    const [rows] = await db.execute(`SELECT * FROM domains WHERE domain_name = ?`, [domain_name]);
+
+    if (rows.length === 0) {
+      return res.status(404).json({ success: false, message: "Domain not found." });
+    }
+
+    res.status(200).json({ success: true, data: rows[0] });
+  } catch (err) {
+    console.error("Error retrieving domain:", err);
+    res.status(500).json({ success: false, error: err.message });
+  }
+};
