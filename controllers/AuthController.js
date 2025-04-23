@@ -73,11 +73,14 @@ const countryCodeMap = {
 
 export const checkOrCreateUser = async (req, res) => {
   try {
-    const { firstName, lastName, email, phone, address, city, country , password} = req.body;
-    console.log(email)
+    const { firstName, lastName, email, phone, address, city, country, password } = req.body;
+    console.log("📧 Checking email:", email);
+
     const countryCode = countryCodeMap[country] || "US";
 
+    // ✅ Check local DB first
     const existingUser = await getUserByEmail(email);
+    console.log("✔️ Existing user found, returning early");
     if (existingUser) {
       return res.status(200).json({
         message: "User already exists in database",
@@ -99,10 +102,16 @@ export const checkOrCreateUser = async (req, res) => {
       email,
     });
 
+    console.log(stackRes)
+
     const ref = stackRes.data?.data?.result?.ref;
     const passwordStack = stackRes.data?.data?.result?.password;
+    const passwordStackcp = stackRes.data?.passwordStack;
     const msg = stackRes.data?.message;
 
+    console.log("🔐 StackCP Password:", passwordStack);
+
+    // If ref is null but conflict returned
     if (!ref && msg === "ℹ️ StackCP user already exists") {
       return res.status(409).json({ message: "Email exists in StackCP but not in DB" });
     }
@@ -120,51 +129,28 @@ export const checkOrCreateUser = async (req, res) => {
       billing_ref: "auto-generated",
       email,
       usereff: ref,
-      password // optional: hash this if needed
+      password, // 🔐 You may want to hash this before saving
     });
 
-    // 📧 Send login info
-    await transporter.sendMail({
-      to: 'filibiinfanax10@gmail.com',
-      subject: "Your StackCP Account Details",
-      text: `Hi ${firstName},
-    
-    Your StackCP account has been created.
-    
-    Login Reference: ${ref}
-    Password: ${passwordStack}
-    
-    Login here: https://portal.shiineuu.com/
-    
-    Please keep this information safe.
-    
-    Thank you!`,
-      html: `
-        <p>Hi ${firstName},</p>
-        <p>Your StackCP account has been created.</p>
-        <p><strong>Email :</strong> ${email}<br/>
-        <strong>Password:</strong> ${passwordStack}</p>
-        <strong> Login here: https://portal.shiineuu.com/</p>
-        <p><a href="https://portal.shiineuu.com/" target="_blank">Click here to login</a></p>
-        <p>Please keep this information safe.</p>
-        <p>Thank you!</p>
-      `
-    });
-    
-
+    // ✅ Return response with both passwords (if needed)
+    console.log("✅ Final return with password stack:", passwordStack);
     return res.status(201).json({
-      message: "User created in both systems and email sent",
-      userRef: ref
+      // message: "User created in both systems and email sent",
+      // userRef: ref,
+      // passwordStack: passwordStack,
+      // passwordStackcpreal: passwordStackcp,
+      data: stackRes,
     });
 
   } catch (error) {
     console.error("❌ Server error:", error);
     return res.status(500).json({
       message: "Server error",
-      error: error?.message
+      error: error?.message,
     });
   }
 };
+
 
 
 // // 🔹 Login Controller
@@ -221,16 +207,16 @@ export const login = async (req, res) => {
     // Set cookies
     res.cookie("userRef", user.usereff, {
       httpOnly: true,
-      secure: true,
-      sameSite: "none",
+      secure: isProduction,
+      sameSite: "Strict",
       maxAge: 24 * 60 * 60 * 1000,
       path: "/",
     });
 
     res.cookie("token", token, {
       httpOnly: true,
-      secure: true,
-      sameSite: "none",
+      secure: isProduction,
+      sameSite: "Strict",
       maxAge: 24 * 60 * 60 * 1000,
       path: "/",
     });
@@ -271,8 +257,8 @@ export const logout = (req, res) => {
 
   res.clearCookie("token", {
     httpOnly: true,
-    sameSite: "none",
-    secure: true,
+    sameSite: "Strict",
+    secure: isProduction,
     path: "/",
   });
 
