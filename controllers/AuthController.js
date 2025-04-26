@@ -207,7 +207,7 @@ export const login = async (req, res) => {
     // Set cookies
     res.cookie("userRef", user.usereff, {
       httpOnly: true,
-      secure: secure,
+      secure: true,
       sameSite: "none",
       maxAge: 24 * 60 * 60 * 1000,
       path: "/",
