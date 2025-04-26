@@ -207,16 +207,16 @@ export const login = async (req, res) => {
     // Set cookies
     res.cookie("userRef", user.usereff, {
       httpOnly: true,
-      secure: isProduction,
-      sameSite: "Strict",
+      secure: secure,
+      sameSite: "none",
       maxAge: 24 * 60 * 60 * 1000,
       path: "/",
     });
 
     res.cookie("token", token, {
       httpOnly: true,
-      secure: isProduction,
-      sameSite: "Strict",
+      secure: true,
+      sameSite: "none",
       maxAge: 24 * 60 * 60 * 1000,
       path: "/",
     });
@@ -258,7 +258,7 @@ export const logout = (req, res) => {
   res.clearCookie("token", {
     httpOnly: true,
     sameSite: "Strict",
-    secure: isProduction,
+    secure: true,
     path: "/",
   });
 
