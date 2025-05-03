@@ -19,7 +19,7 @@ const PORT = 7000;
 app.use(cors({
   origin: [
     "https://shiineuu.com",
-    "http://localhost:5173"
+    "http://localhost:5173",
     "http://localhost:5174"
   ],
   credentials: true,
