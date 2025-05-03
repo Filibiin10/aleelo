@@ -89,7 +89,7 @@ export const checkOrCreateUser = async (req, res) => {
     }
 
     // 🔁 Create StackCP user
-    const stackRes = await axios.post("http://localhost:7000/api/users/create", {
+    const stackRes = await axios.post("http://localhost:8000/api/users/create", {
       person_name: `${firstName} ${lastName}`,
       company_name: `${firstName} Ltd`,
       address,
